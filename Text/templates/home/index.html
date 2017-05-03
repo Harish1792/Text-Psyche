@@ -1,0 +1,10 @@
+{% extends "home/Frame.html" %}
+ {% block content %}
+<p>Upload your file here</p>
+<form action ="/analyze/" method="POST" name ="sendtext" id="sendtext"  enctype="multipart/form-data">
+  	{% csrf_token %}
+<input type="file" id="file" name="file"  />
+</br>
+<input type="submit" value="Analyze">
+</form>
+   {% endblock %}

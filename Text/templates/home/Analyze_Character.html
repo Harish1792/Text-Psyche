@@ -1,0 +1,274 @@
+{% extends "home/Analyze.html" %}
+{% block content %}	
+{% for key,values in Extraversion.items%}
+{% if key == 'Character'%}
+<h1 class = "Per_stle" style ="color:yellow">{{values}}</p> 
+{% endif %}
+{%endfor%}
+{% endblock %}
+
+
+{% block Extraversion %}
+{% for key,values in Extraversion.items %}
+	{% if key == 'Extraversion'%}
+      <div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent={{values}}> <span class="percent">{{values}}</span> </span>
+        <h4 style ="color:Blue">Extraversion</h4>
+      </div>
+	{% elif key == 'Neuroticism'%}  
+		<div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent={{values}}> <span class="percent">{{values}}</span> </span>
+			<h4 style ="color:Blue">Neuroticism</h4>
+		</div>
+	{% elif key == 'Agreeableness'%}  
+		<div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent={{values}}> <span class="percent">{{values}}</span> </span>
+			<h4 style ="color:Blue">Agreeableness</h4>
+		</div>
+	{% elif key == 'Conscientiousness'%}  
+		<div class="col-md-7 col-sm-6 skill"> <span class="chart" data-percent={{values}}> <span class="percent">{{values}}</span> </span>
+			<h4 style ="color:Blue">Conscientiousness</h4>
+		</div>
+	{% elif key == 'Openness'%}  
+		<div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent={{values}}> <span class="percent">{{values}}</span> </span>
+			<h4 style ="color:Blue">Openness</h4>
+		</div>
+	{% endif %} 
+{% endfor %}
+{% endblock %}
+
+<!--  Newly Added code for Charts -->
+
+{% block Charts %}
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+g {
+font: 14px sans-serif;
+color: blue;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: orange;
+}
+
+.bar:hover {
+  fill: orangered ;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+/* Style northward tooltips differently */
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<h3>The seed Terms are</h3>
+<script>
+
+var margin = {top: 40, right: 20, bottom: 30, left: 40},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+	
+
+console.log(height)
+console.log(width)
+console.log( margin.top)
+console.log(margin.bottom)
+var formatPercent = d3.format(".0%");
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], .1,.3);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+	
+	
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+    //.tickFormat(formatPercent);
+
+var tip = d3.tip()
+  .attr('class', 'd3-tip')
+  .offset([-10, 0])
+  .html(function(d) {
+    return "<strong>Frequency:</strong> <span style='color:red'>" + d.Frequency + "</span>";
+  })
+
+var dummy =240
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right +dummy)
+    .attr("height", height + margin.top + margin.bottom+dummy)
+  .append("g")
+    .attr("transform", "translate(" + 150+ "," + margin.top + ")");
+
+svg.call(tip);
+{% load static %}
+d3.tsv("{% static "/Home/Category_Count.tsv" %}" , type, function(error, data) {
+	if (error) throw error;
+  x.domain(data.map(function(d) { return d.Category; }));
+  y.domain([0, d3.max(data, function(d) { return d.Frequency; })]);
+console.log(d3.max(data, function(d) { return d.Frequency; }))
+console.log("adkasdasd")
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+	  .selectAll(".tick text")
+	  .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-65)" );
+	  //.call(wrap, x.rangeBand());
+	  //console.log(x.rangeBand())
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Frequency");
+
+  svg.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.Category); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.Frequency	); })
+      .attr("height", function(d) { return height - y(d.Frequency	); })
+      .on('mouseover', tip.show)
+      .on('mouseout', tip.hide)
+
+});
+
+function type(d) {
+  d.Frequency = +d.Frequency	;
+  return d;
+}
+
+function wrap (text, width) {
+
+  text.each(function() {
+
+    var breakChars = ['/', '&', '-'],
+      text = d3.select(this),
+      textContent = text.text(),
+      spanContent;
+
+    breakChars.forEach(char => {
+      // Add a space after each break char for the function to use to determine line breaks
+      textContent = textContent.replace(char, char + ' ');
+    });
+
+    var words = textContent.split(/\s+/).reverse(),
+      word,
+      line = [],
+      lineNumber = 0,
+      lineHeight = 1.1, // ems
+      x = text.attr('x'),
+      y = text.attr('y'),
+      dy = parseFloat(text.attr('dy') || 0),
+      tspan = text.text(null).append('tspan').attr('x', x).attr('y', y).attr('dy', dy + 'em');
+
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(' '));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        spanContent = line.join(' ');
+        breakChars.forEach(char => {
+          // Remove spaces trailing breakChars that were added above
+          spanContent = spanContent.replace(char + ' ', char);
+        });
+        tspan.text(spanContent);
+        line = [word];
+        tspan = text.append('tspan').attr('x', x).attr('y', y).attr('dy', ++lineNumber * lineHeight + dy + 'em').text(word);
+      }
+    }
+  });
+
+}
+</script>
+{% endblock %}
+
+
+<!--
+{% block skills %}
+{% for j in skills %}
+
+<div id="skills" class="text-center">
+  <div class="container">
+    <div class="section-title center">
+      <h2>Personality Meter</h2>
+      <hr>
+    </div>
+    <div class="row">
+      <div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent={{j}}> <span class="percent">{{j}}</span> </span>
+        <h4>Extraversion - {{loop.index}}</h4>
+      </div>
+      <div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent={{j}}> <span class="percent">85</span> </span>
+        <h4>Neuroticism</h4>
+      </div>
+      <div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent="80"> <span class="percent">80</span> </span>
+        <h4>Agreeableness</h4>
+      </div>
+      <div class="col-md-7 col-sm-6 skill"> <span class="chart" data-percent="80"> <span class="percent">80</span> </span>
+        <h4>Conscientiousness</h4>
+      </div>
+      <div class="col-md-4 col-sm-6 skill"> <span class="chart" data-percent="70"> <span class="percent">70</span> </span>
+        <h4>Openness</h4>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}
+
+-->

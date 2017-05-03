@@ -1,0 +1,16 @@
+{% extends "home/Analyze.html" %}
+{% block content %}
+	<h2>Analyze text over default categories</h1>
+	<form action ="/analyze/" method="POST" name ="sendtext" id="sendtext" >
+		{% csrf_token %}
+	<textarea id="for_analysis" name ="for_analysis" form="sendtext"></textarea>
+	<!--<input id="for_analysis" type="text" name="for_analysis" maxlength="100"  /> -->
+	<!--<label for="your_name">Your name: </label>
+	<input id="your_name" type="text" name="your_name" maxlength="100"  /> -->
+
+	<br/>
+	<input type="submit" value="Analyze">
+	<!--<button id="ana_text">Analyze</button> -->
+	<br/>
+</form>
+{% endblock %}

@@ -1,0 +1,50 @@
+/* Paste this css to your style sheet file or under head tag */
+			/* This only works with JavaScript, 
+			if it's not present, don't show loader */
+			.no-js #loader { display: none; background: url(../img/downloads-bg.jpg) center no-repeat #fff; }
+			.js #loader { display: block; position: absolute; left: 100px; top: 0;background: url(../img/downloads-bg.jpg) center no-repeat #fff; }
+			.se-pre-con {
+			position: fixed;
+			left: 0px;
+			top: 0px;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			background: url(../img/downloads-bg.jpg) center no-repeat #fff;
+			}
+.trial{
+			position: fixed;
+			left: 0px;
+			top: 0px;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			display:none;
+			background-clip: border-box;
+			background-origin: padding-box;
+			background-image: url("../img/Preloader_7.gif");
+			background-position-x: center;
+			background-position-y: center;
+			background-size: auto auto;
+			background-color: rgb(255, 255, 255);
+			background-repeat: no-repeat;
+			background-attachment: scroll;
+}
+.fileprocessing{
+			position: fixed;
+			left: 0px;
+			top: 0px;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			display:none;
+			background-clip: border-box;
+			background-origin: padding-box;
+			background-image: url("../img/Preloader_5.gif");
+			background-position-x: center;
+			background-position-y: center;
+			background-size: auto auto;
+			background-color: rgb(255, 255, 255);
+			background-repeat: no-repeat;
+			background-attachment: scroll;
+}
